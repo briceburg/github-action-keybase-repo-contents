@@ -27,8 +27,8 @@ jobs:
       name: 'secrets'
       uses: './'
       with:
-        keybase-username: '${{ secrets.KEYBASE_USERNAME }}'
-        keybase-paperkey: '${{ secrets.KEYBASE_PAPERKEY }}'
+        keybase_username: '${{ secrets.KEYBASE_USERNAME }}'
+        keybase_paperkey: '${{ secrets.KEYBASE_PAPERKEY }}'
         repo: 'keybase://private/briceburg/github-action-test'
         paths: '*.secret.yml:larry.xml:curly/moe.json'
         target: 'secrets'

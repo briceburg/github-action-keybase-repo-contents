@@ -1,10 +1,10 @@
 name: 'Keybase Repo Contents'
 description: 'Use keybase git repository contents in GitHub Actions.'
 inputs:
-  keybase-username:
+  keybase_username:
     description: 'Keybase Username'
     required: true
-  keybase-paperkey:
+  keybase_paperkey:
     description: 'Keybase Paper Key'
     required: true
   paths:
