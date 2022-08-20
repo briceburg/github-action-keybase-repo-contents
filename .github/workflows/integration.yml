@@ -1,0 +1,48 @@
+name: 'integration'
+
+on:
+  push:
+    branches:
+    - 'main'
+  pull_request:
+    branches:
+    - 'main'
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  default:
+    if: ${{ github.event_name == 'push' || github.repository == github.event.pull_request.head.repo.full_name && github.actor != 'dependabot[bot]' }}
+    name: 'default'
+    permissions:
+      contents: 'read'
+    runs-on: 'ubuntu-latest'
+    steps:
+    - uses: 'actions/checkout@v3'
+
+    - id: 'secrets'
+      name: 'secrets'
+      uses: './'
+      with:
+        keybase-username: '${{ secrets.KEYBASE_USERNAME }}'
+        keybase-paperkey: '${{ secrets.KEYBASE_PAPERKEY }}'
+        repo: 'keybase://private/briceburg/github-action-test'
+        paths: '*.secret.yml:larry.xml:curly/moe.json'
+        target: 'secrets'
+
+    #
+    # testdata repository contents;
+    # cat README.md
+    # .
+    # ├── README.md
+    # ├── bar.secret.tfvars
+    # ├── foo.secret.tfvars
+    # └── larry
+    #     └── curly
+    #         └── moe.json
+    #
+    - name: 'outputs'
+      run: echo '${{ steps.secrets.outputs.paths }}'
