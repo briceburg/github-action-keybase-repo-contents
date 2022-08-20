@@ -18,6 +18,8 @@ This is a helper action for copying paths, such as secret file(s), from a privat
     paths: "*.secret.yml:larry.xml:curly/moe.json"
 ```
 
+The [integration workflow](./.github/workflows/integration.yml) shows real-world usage, including output consumption.
+
 ### Inputs
 
 name | :ballot_box_with_check: | description

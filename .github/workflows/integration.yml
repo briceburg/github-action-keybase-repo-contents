@@ -49,18 +49,37 @@ jobs:
     #
     - name: 'tests'
       run: |
-        # tests: action has valid 'path' output
-        echo '${{ steps.self.outputs.paths }}' > output
+        echo [test] action has valid 'path' output
+        (
+          echo '${{ steps.self.outputs.paths }}' > output
 
-        ## test: README.md was skipped
-        grep -q --invert-match "README.md" output
+          echo README.md was skipped
+          grep -q --invert-match "README.md" output
 
-        ## test: globstar expansions work
-        grep -q "moe.json" output
+          echo globstar expansions work
+          grep -q "moe.json" output
 
-        ## test: glob expansions work
-        grep -q "foo.secret.tfvars" output
-        grep -q "bar.secret.tfvars" output
+          echo glob expansions work
+          grep -q "foo.secret.tfvars" output
+          grep -q "bar.secret.tfvars" output
 
-        ## test: explicit paths work
-        grep -q "foo/test.json" output
+          echo explicit paths work
+          grep -q "foo/test.json" output
+        )
+
+        echo [test] files copied to target
+        (
+          test -e secrets/foo.secret.tfvars
+          test -e secrets/bar.secret.tfvars
+          ! test -e secrets/README.md
+        )
+
+        echo [test] retain hierarchy with recursive copy
+        (
+          cd secrets
+          tree
+          test -e larry/curly/moe.json
+          test -e foo/test.json
+        )
+
+        echo "[OK] TESTS PASS"

@@ -36,7 +36,7 @@ COPIED=()
 IFS=":"; shopt -s globstar; for path in $INPUT_PATHS; do
   for file in $path; do
     if [ -e "$file" ]; then
-      cp -r "$file" "$target"
+      cp -r "$file" "$target/"
       COPIED+=("$file")
     else
       log "skipping $file (does not exist in repository checkout)"
