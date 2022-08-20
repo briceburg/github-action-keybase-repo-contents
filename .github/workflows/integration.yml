@@ -29,7 +29,7 @@ jobs:
       with:
         keybase_username: '${{ secrets.KEYBASE_USERNAME }}'
         keybase_paperkey: '${{ secrets.KEYBASE_PAPERKEY }}'
-        repo: 'keybase://private/briceburg/github-action-test'
+        repo: 'keybase://private/briceburg_test/github-action-test'
         paths: '*.secret.tfvars:larry/**/moe.json:foo/test.json'
         target: 'secrets'
 
