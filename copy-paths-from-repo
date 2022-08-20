@@ -26,16 +26,18 @@ checkout="$(mktemp -d)"
 trap '{
   RV=$?
   rm -rf "$checkout"
+  echo "::set-output name=paths::${COPIED[*]}"
   exit $RV
 }' EXIT
 
 git clone --depth 1 "$INPUT_REPO" "$checkout"
 cd "$checkout"
-IFS=":"; for path in $INPUT_PATHS; do
+COPIED=()
+IFS=":"; shopt -s globstar; for path in $INPUT_PATHS; do
   for file in $path; do
     if [ -e "$file" ]; then
-      log "copying $file"
       cp -r "$file" "$target"
+      COPIED+=("$file")
     else
       log "skipping $file (does not exist in repository checkout)"
     fi

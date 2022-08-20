@@ -1,0 +1,26 @@
+name: 'Keybase Repo Contents'
+description: 'Use keybase git repository contents in GitHub Actions.'
+inputs:
+  keybase-username:
+    description: 'Keybase Username'
+    required: true
+  keybase-paperkey:
+    description: 'Keybase Paper Key'
+    required: true
+  paths:
+    description: 'Colon separated list of paths to copy from the repository. Globstar pattern matching is supported.'
+    required: true
+  repo:
+    description: 'Repository name'
+    required: true
+  target:
+    description: 'Target directory (relative to workspace) to copy to'
+    required: false
+outputs:
+  paths:
+    description: 'Colon separated list of paths that successfully copied into the workspace'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - copy-paths-from-repo
