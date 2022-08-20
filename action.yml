@@ -1,5 +1,8 @@
 name: 'Keybase Repo Contents'
-description: 'Use keybase git repository contents in GitHub Actions.'
+branding:
+  icon: 'file-plus'
+  color: 'red'
+description: 'Use content, such as secrets files, from Keybase git repositories.'
 inputs:
   keybase_username:
     description: 'Keybase Username'
