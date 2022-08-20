@@ -23,26 +23,44 @@ jobs:
     steps:
     - uses: 'actions/checkout@v3'
 
-    - id: 'secrets'
-      name: 'secrets'
+    - id: 'self'
+      name: 'self execution'
       uses: './'
       with:
         keybase_username: '${{ secrets.KEYBASE_USERNAME }}'
         keybase_paperkey: '${{ secrets.KEYBASE_PAPERKEY }}'
         repo: 'keybase://private/briceburg/github-action-test'
-        paths: '*.secret.yml:larry.xml:curly/moe.json'
+        paths: '*.secret.tfvars:larry/**/moe.json:foo/test.json'
         target: 'secrets'
 
     #
     # testdata repository contents;
-    # cat README.md
     # .
     # ├── README.md
     # ├── bar.secret.tfvars
+    # ├── foo
+    # │   └── test.json
     # ├── foo.secret.tfvars
     # └── larry
     #     └── curly
     #         └── moe.json
     #
-    - name: 'outputs'
-      run: echo '${{ steps.secrets.outputs.paths }}'
+    # 3 directories, 5 files
+    #
+    - name: 'tests'
+      run: |
+        # tests: action has valid 'path' output
+        echo '${{ steps.self.outputs.paths }}' > output
+
+        ## test: README.md was skipped
+        grep -q --invert-match "README.md" output
+
+        ## test: globstar expansions work
+        grep -q "moe.json" outputs
+
+        ## test: glob expansions work
+        grep -q "foo.secret.tfvars" output
+        grep -q "bar.secret.tfvars" output
+
+        ## test: explicit paths work
+        grep -q "foo/test.json" output
