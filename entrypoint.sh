@@ -10,6 +10,9 @@ export KEYBASE_SERVICE="oneshot"
 export KEYBASE_USERNAME="$INPUT_KEYBASE_USERNAME"
 export KEYBASE_PAPERKEY="$INPUT_KEYBASE_PAPERKEY"
 
+[ -n "$KEYBASE_USERNAME" ] || { echo "empty KEYBASE_USERNAME" >&2; exit 1; }
+[ -n "$KEYBASE_PAPERKEY" ] || { echo "empty KEYBASE_PAPERKEY" >&2; exit 1; }
+
 keybase --use-default-log-file service &
 kbfsfuse -log-to-file -mount-type=none &
 keybase ctl wait --include-kbfs
