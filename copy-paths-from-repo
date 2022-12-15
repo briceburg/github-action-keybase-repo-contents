@@ -26,7 +26,7 @@ checkout="$(mktemp -d)"
 trap '{
   RV=$?
   rm -rf "$checkout"
-  echo "::set-output name=paths::${COPIED[*]}"
+  echo "paths=${COPIED[*]}" >> $GITHUB_OUTPUT
   exit $RV
 }' EXIT
 
