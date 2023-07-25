@@ -1,39 +1,26 @@
 #!/usr/bin/env bash
-#
-# copy-paths-from-repo:
-#   copies specified files and directories from a git repository to a target.
-#   supports glob expansion.
-#
-# enironment variables:
-#  INPUT_REPO  : required. git repository to copy from.
-#  INPUT_PATHS : required. colon seperated list of files or directories to copy.
-#                globs are supported, e.g. "foo:bar:*.secret:secrets/*"
-#  INPUT_TARGET: optional. target directory to copy to. empty for CWD.
-#
 set -eo pipefail
 log(){ echo -e "[action] $*" >&2; }
 die(){ log "$@"; exit 1; }
 
-[ -n "$INPUT_REPO" ] || die "empty INPUT_REPO"
-[ -n "$INPUT_PATHS" ] || die "empty INPUT_PATHS"
+checkout="$1"
+target="$2"
+paths="$3"
 
-target="${INPUT_TARGET:-$PWD}"
 [ -e "$target" ] || mkdir -p "$target"
 [ -d "$target" ] || die "Target ($target) must be a directory"
 target="$(readlink -f "$target")" # ensure target is absolute
 
-checkout="$(mktemp -d)"
 trap '{
   RV=$?
   rm -rf "$checkout"
-  echo "paths=${COPIED[*]}" >> $GITHUB_OUTPUT
+  echo "paths=${COPIED[*]}" >> "$GITHUB_OUTPUT"
   exit $RV
 }' EXIT
 
-git clone --depth 1 "$INPUT_REPO" "$checkout"
 cd "$checkout"
 COPIED=()
-IFS=":"; shopt -s globstar; for path in $INPUT_PATHS; do
+IFS=":"; shopt -s globstar; for path in $paths; do
   for file in $path; do
     if [ -e "$file" ]; then
       mkdir -p "$target/$(dirname "$file")"

@@ -22,8 +22,27 @@ inputs:
 outputs:
   paths:
     description: 'Colon separated list of paths that successfully copied into the workspace'
+    value: ${{ steps.secrets.outputs.paths }}
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - copy-paths-from-repo
+  using: "composite"
+  steps:
+    - name: checkout ${{ inputs.repo }}
+      uses: briceburg/github-action-keybase-repo@1f296afaedc5048bb7f6c1706e814639c3197463
+      with:
+        keybase_paperkey: ${{ inputs.keybase_paperkey }}
+        keybase_username: ${{ inputs.keybase_username }}
+        repo: ${{ inputs.repo }}
+        target: .keybase_repo_contents
+
+    - name: copy secrets
+      id: secrets
+      shell: bash
+      run: |
+        ${{ github.action_path }}/copy-paths-from-repo \
+          "$GITHUB_WORKSPACE/.keybase_repo_contents" \
+          "${{ inputs.target || '.' }}" \
+          "${{ inputs.paths }}"
+        
+
+        
+
